@@ -1,0 +1,23 @@
+name: estacio
+
+services:
+  app:
+    build: .
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data # store certificates
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
