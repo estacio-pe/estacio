@@ -1,65 +1,255 @@
-import Image from "next/image";
+"use client";
+
+import {
+  ChartBarIcon,
+  ClockIcon,
+  GearIcon,
+  HouseIcon,
+  ScissorsIcon,
+  ShoppingBagIcon,
+  SignOutIcon,
+  UsersIcon,
+} from "@phosphor-icons/react";
+import { useState } from "react";
+import { Spoiler } from "spoiled";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { mockTransactions, summaryStats, type Transaction } from "@/lib/mock";
+
+const PAGE_SIZE = 15;
+
+const navItems = [
+  { label: "Inicio", icon: HouseIcon, active: true },
+  { label: "Empleados", icon: UsersIcon, active: false },
+  { label: "Servicios", icon: ScissorsIcon, active: false },
+  { label: "Productos", icon: ShoppingBagIcon, active: false },
+  { label: "Reportes", icon: ChartBarIcon, active: false },
+  { label: "Historial", icon: ClockIcon, active: false },
+];
+
+const paymentBadge: Record<Transaction["pago"], string> = {
+  Efectivo:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+  Tarjeta: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400",
+  Yape: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400",
+};
+
+const typeBadge: Record<Transaction["tipo"], string> = {
+  Servicio:
+    "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+  Producto: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400",
+  Gasto: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400",
+};
 
 export default function Home() {
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(mockTransactions.length / PAGE_SIZE);
+  const pageData = mockTransactions.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <SidebarProvider open>
+      <Sidebar collapsible="none" className="sticky top-0 h-svh border-r">
+        <SidebarHeader className="px-4 py-5">
+          <div className="flex items-center gap-2">
+            <ScissorsIcon className="size-5 text-primary" weight="bold" />
+            <span className="text-sm font-semibold tracking-tight">
+              Estacio
+            </span>
+          </div>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Menú</SidebarGroupLabel>
+            <SidebarMenu>
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton isActive={item.active}>
+                      <Icon />
+                      {item.label}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton>
+                <GearIcon />
+                Configuración
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton>
+                <SignOutIcon />
+                Cerrar sesión
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+
+      <SidebarInset>
+        <div className="flex flex-col gap-6 p-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-base font-semibold">Resumen del día</h1>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm">
+                Exportar
+              </Button>
+              <Button size="sm">Nuevo</Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-muted-foreground">
+                  Gastos del día
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold select-none">
+                  <Spoiler>S/ {summaryStats.gastos.toFixed(2)}</Spoiler>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-muted-foreground">
+                  Venta con tarjeta
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold select-none">
+                  <Spoiler>S/ {summaryStats.ventaTarjeta.toFixed(2)}</Spoiler>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-muted-foreground">
+                  Venta de productos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-semibold select-none">
+                  <Spoiler>S/ {summaryStats.ventaProductos.toFixed(2)}</Spoiler>
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Hora</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Descripción</TableHead>
+                  <TableHead>Empleado</TableHead>
+                  <TableHead>Pago</TableHead>
+                  <TableHead className="text-right">Monto</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pageData.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell className="tabular-nums">{row.hora}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${typeBadge[row.tipo]}`}
+                      >
+                        {row.tipo}
+                      </span>
+                    </TableCell>
+                    <TableCell>{row.descripcion}</TableCell>
+                    <TableCell>{row.empleado}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${paymentBadge[row.pago]}`}
+                      >
+                        {row.pago}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      S/ {row.monto.toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <div className="flex items-center justify-between border-t px-4 py-3">
+              <p className="text-xs text-muted-foreground">
+                Página {page} de {totalPages} — {mockTransactions.length}{" "}
+                registros
+              </p>
+              <div className="flex gap-1">
+                <Button
+                  variant="outline"
+                  size="xs"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Anterior
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (p) => (
+                    <Button
+                      key={`page-${p}`}
+                      variant={p === page ? "default" : "outline"}
+                      size="xs"
+                      onClick={() => setPage(p)}
+                    >
+                      {p}
+                    </Button>
+                  ),
+                )}
+                <Button
+                  variant="outline"
+                  size="xs"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Siguiente
+                </Button>
+              </div>
+            </div>
+          </Card>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
