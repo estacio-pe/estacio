@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/table";
 import { mockTransactions, summaryStats, type Transaction } from "@/lib/mock";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 const navItems = [
   { label: "Inicio", icon: HouseIcon, active: true },
@@ -122,8 +122,7 @@ export default function Home() {
 
       <SidebarInset>
         <div className="flex flex-col gap-6 p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-base font-semibold">Resumen del día</h1>
+          <div className="flex justify-end">
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 Exportar
@@ -189,7 +188,7 @@ export default function Home() {
                     <TableCell className="tabular-nums">{row.hora}</TableCell>
                     <TableCell>
                       <span
-                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${typeBadge[row.tipo]}`}
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium`}
                       >
                         {row.tipo}
                       </span>
@@ -198,7 +197,7 @@ export default function Home() {
                     <TableCell>{row.empleado}</TableCell>
                     <TableCell>
                       <span
-                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${paymentBadge[row.pago]}`}
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium`}
                       >
                         {row.pago}
                       </span>
