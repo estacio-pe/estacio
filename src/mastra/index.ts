@@ -7,9 +7,9 @@ import {
   Observability,
   SensitiveDataFilter,
 } from "@mastra/observability";
+import { chatAgent } from "./agents/chat-agent";
 import { weatherAgent } from "./agents/weather-agent";
 import { weatherWorkflow } from "./workflows/weather-workflow";
-import { chatAgent } from "./agents/chat-agent";
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
