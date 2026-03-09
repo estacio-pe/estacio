@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# version control
+.git/
+.gitignore
+
+# editor / os
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# logs
+*.log
+npm-debug.log*
+
+# testing
+coverage/
+
+# misc
+README.md
+AGENTS.md
+Caddyfile
+Dockerfile
+.dockerignore
