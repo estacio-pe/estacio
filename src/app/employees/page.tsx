@@ -1,6 +1,7 @@
 import { UsersIcon } from "@phosphor-icons/react/dist/ssr";
 import { RootLayout } from "@/components/root-layout";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
 import {
   Table,

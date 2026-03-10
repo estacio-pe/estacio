@@ -150,6 +150,13 @@ export const mockServiciosCatalogo: ServicioCatalogo[] = [
   },
 ];
 
+export const mockServiciosCatalogoSelect = mockServiciosCatalogo.map(
+  (servicio) => ({
+    value: servicio.id,
+    label: `${servicio.nombre} — S/ ${servicio.precio}`,
+  }),
+);
+
 export const mockServicioStats: ServicioStat[] = [
   {
     id: "s13",

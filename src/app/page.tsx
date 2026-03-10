@@ -28,8 +28,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { NativeSelect } from "@/components/ui/native-select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -43,9 +51,11 @@ import {
   type PaymentMethod,
   type Transaction,
 } from "@/lib/mock";
-import { mockEmpleados } from "@/lib/mock-empleados";
-import { mockServiciosCatalogo } from "@/lib/mock-servicios";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { mockEmpleados, mockEmpleadosSelect } from "@/lib/mock-empleados";
+import {
+  mockServiciosCatalogo,
+  mockServiciosCatalogoSelect,
+} from "@/lib/mock-servicios";
 
 const PAGE_SIZE = 10;
 
@@ -321,12 +331,7 @@ export default function Home() {
 
           <div className="flex flex-col gap-4 p-4">
             <Field>
-              <FieldLabel
-                htmlFor="input-ticket"
-                className="text-xs font-medium"
-              >
-                Número de ticket
-              </FieldLabel>
+              <FieldLabel htmlFor="input-ticket">Número de ticket</FieldLabel>
               <Input
                 id="input-ticket"
                 placeholder="ej. 0031"
@@ -337,61 +342,80 @@ export default function Home() {
               />
             </Field>
 
-            <div className="flex flex-col gap-1.5">
-              <Field>
-                <FieldLabel>Personal</FieldLabel>
-                <NativeSelect
-                  value={form.empleadoId}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, empleadoId: e.target.value }))
-                  }
-                >
-                  <option value="" disabled>
-                    Selecciona un empleado
-                  </option>
-                  {mockEmpleados
-                    .filter((e) => e.activo)
-                    .map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {emp.nombre} — {emp.cargo}
-                      </option>
+            <Field>
+              <FieldLabel>Personal</FieldLabel>
+              <Select
+                items={mockEmpleadosSelect}
+                onValueChange={(value) =>
+                  setForm((f) => ({ ...f, empleadoId: value as string }))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={"Selecciona un empleado"} />
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {mockEmpleadosSelect.map((emp) => (
+                      <SelectItem key={emp.value} value={emp.value}>
+                        {emp.label}
+                      </SelectItem>
                     ))}
-                </NativeSelect>
-              </Field>
-            </div>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Field>
 
             <Field>
               <FieldLabel>Servicio realizado</FieldLabel>
-              <NativeSelect
-                value={form.servicioId}
-                onChange={(e) => handleServicioChange(e.target.value)}
+              <Select
+                items={mockServiciosCatalogoSelect}
+                onValueChange={(value) => handleServicioChange(value as string)}
               >
-                <option value="" disabled>
-                  Selecciona un servicio
-                </option>
-                {mockServiciosCatalogo.map((servicio) => (
-                  <option key={servicio.id} value={servicio.id}>
-                    {servicio.nombre} — S/ {servicio.precio}
-                  </option>
-                ))}
-              </NativeSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={"Selecciona un servicio"} />
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {mockServiciosCatalogoSelect.map((servicio) => (
+                      <SelectItem key={servicio.value} value={servicio.value}>
+                        {servicio.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </Field>
 
             <Field>
               <FieldLabel>Método de pago</FieldLabel>
-              <NativeSelect
-                value={form.metodoPago}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, metodoPago: e.target.value }))
+
+              <Select
+                items={[
+                  { value: "Efectivo", label: "Efectivo" },
+                  { value: "Tarjeta", label: "Tarjeta" },
+                  { value: "Yape", label: "Yape" },
+                ]}
+                onValueChange={(value) =>
+                  setForm((f) => ({ ...f, metodoPago: value as string }))
                 }
               >
-                <option value="" disabled>
-                  Selecciona método de pago
-                </option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Yape">Yape</option>
-              </NativeSelect>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={"Selecciona método de pago"} />
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectGroup>
+                    {[
+                      { value: "Efectivo", label: "Efectivo" },
+                      { value: "Tarjeta", label: "Tarjeta" },
+                      { value: "Yape", label: "Yape" },
+                    ].map((metodo) => (
+                      <SelectItem key={metodo.value} value={metodo.value}>
+                        {metodo.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </Field>
 
             <Field>

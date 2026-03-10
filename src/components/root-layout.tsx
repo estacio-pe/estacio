@@ -61,7 +61,7 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
                   item.href === "/"
                     ? pathname === "/"
                     : pathname === item.href ||
-                      pathname.startsWith(item.href + "/");
+                      pathname.startsWith(`${item.href}/`);
                 return (
                   <SidebarMenuItem key={item.label}>
                     <SidebarMenuButton

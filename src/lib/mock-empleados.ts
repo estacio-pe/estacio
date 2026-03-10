@@ -63,3 +63,10 @@ export const mockEmpleados: Empleado[] = [
     fechaIngreso: "2023-09-01",
   },
 ];
+
+export const mockEmpleadosSelect = mockEmpleados
+  .filter((e) => e.activo)
+  .map((e) => ({
+    label: `${e.nombre} — ${e.cargo}`,
+    value: e.id,
+  }));
