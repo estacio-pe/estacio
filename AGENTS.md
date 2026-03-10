@@ -1,80 +1,209 @@
-# AGENTS.md
-
-This document provides guidance for AI coding agents working in this repository.
+# AGENTS.md - Development Guidelines for Estacio
 
 ## Project Overview
 
-This is a **Mastra** project written in TypeScript. Mastra is a framework for building AI-powered applications and agents with a modern TypeScript stack.
+Estacio is a Next.js 16 POS (Point of Sale) application for a barbershop, built with TypeScript, Tailwind CSS, and shadcn/ui (Base UI). It includes AI agent integration via Mastra for WhatsApp webhooks.
 
-## Commands
-
-Use these commands to interact with the project.
-
-### Installation
+## Build & Development Commands
 
 ```bash
-npm install
+# Development server
+npm run dev          # Start Next.js dev server on port 3000
+
+# Build
+npm run build        # Production build
+npm run start        # Start production server
+
+# Linting & Formatting
+npm run lint         # Run Biome linter (biome check)
+npm run format       # Format code with Biome (biome format --write)
 ```
 
-### Development
+**Note:** This project does not currently have a test framework configured. Tests are not run.
 
-Start the Mastra Studio at localhost:4111 by running the `dev` script:
+### VS Code Extensions Recommended
+- Biome (biomejs.biome)
+- Tailwind CSS (Tailwind Labs)
+- TypeScript (Microsoft)
 
-```bash
-npm run dev
+## Code Style Guidelines
+
+### TypeScript
+- Strict mode enabled in tsconfig.json
+- Always define return types for functions when not obvious
+- Use `type` for object shapes, interfaces for extendable types
+- Prefer explicit typing over `any`
+
+```typescript
+// Good
+interface User {
+  id: string;
+  name: string;
+}
+
+type PaymentMethod = "Efectivo" | "Tarjeta" | "Yape";
+
+// Good - explicit types
+function calculateTotal(items: CartItem[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
 ```
 
-### Build
+### Import Organization
 
-In order to build a production-ready server, run the `build` script:
+Order imports by groups (blank line between groups):
+1. External libraries (React, Next.js, etc.)
+2. @phosphor-icons/react (icons)
+3. @/ path aliases (local modules)
+4. Relative imports (./components)
 
-```bash
-npm run build
+```typescript
+import { useState, useMemo } from "react";
+import { PlusIcon } from "@phosphor-icons/react";
+import { RootLayout } from "@/components/root-layout";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { mockTransactions } from "@/lib/mock";
+import "./styles.css";
 ```
+
+### Naming Conventions
+
+- **Components**: PascalCase (e.g., `Button`, `CardHeader`)
+- **Functions/variables**: camelCase (e.g., `handleSubmit`, `isValid`)
+- **Constants**: camelCase or UPPER_SNAKE_CASE for config (e.g., `PAGE_SIZE`, `MAX_RETRIES`)
+- **Files**: kebab-case for utilities, PascalCase for components (e.g., `utils.ts`, `Button.tsx`)
+- **Interfaces/Types**: PascalCase with descriptive names (e.g., `Transaction`, `ServicioForm`)
+- **Spanish naming** is used for business logic (e.g., `mockEmpleados`, `servicioId`)
+
+### Component Structure
+
+Follow this pattern for UI components:
+
+```typescript
+"use client";
+
+import { cn } from "@/lib/utils";
+
+interface ComponentProps {
+  className?: string;
+  variant?: "default" | "outline";
+}
+
+function Component({ className, variant = "default" }: ComponentProps) {
+  return (
+    <div className={cn("base-styles", variant === "outline" && "outline-styles", className)}>
+      {/* content */}
+    </div>
+  );
+}
+
+export { Component };
+```
+
+### React Patterns
+
+- Use `"use client"` directive for client components
+- Destructure props with defaults
+- Use `useMemo` for expensive calculations
+- Use `useCallback` for event handlers passed to child components
+- Prefer functional components with hooks
+
+```typescript
+// Good
+const [value, setValue] = useState<string>("");
+
+const handleChange = useCallback((newValue: string) => {
+  setValue(newValue);
+}, []);
+
+const computedValue = useMemo(() => {
+  return items.filter(item => item.active).length;
+}, [items]);
+```
+
+### Error Handling
+
+- Use try/catch for async operations
+- Return appropriate HTTP responses in API routes
+- Use Zod for runtime validation
+
+```typescript
+// API route error handling
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    // process request
+    return Response.json({ success: true });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    return Response.json({ error: "Invalid request" }, { status: 400 });
+  }
+}
+```
+
+### Tailwind CSS
+
+- Use Tailwind for all styling
+- Follow the project's color scheme (use semantic tokens like `bg-primary`, `text-muted-foreground`)
+- Support dark mode with `dark:` prefix
+- Use `cn()` utility for conditional classes
+
+```typescript
+<div className={cn(
+  "flex items-center gap-2",
+  isActive && "bg-primary text-primary-foreground",
+  className
+)} />
+```
+
+### Database & API
+
+- Use Zod schemas for request/response validation
+- Use libsql with Mastra for data persistence
+- API routes go in `src/app/api/`
+- Webhook handlers in `src/app/api/webhooks/`
+
+### Git Conventions
+
+- Use conventional commit messages: `feat:`, `fix:`, `refactor:`, `docs:`
+- Create feature branches from `main`
+- Run `npm run lint` and `npm run format` before committing
 
 ## Project Structure
 
-Folders organize your agent's resources, like agents, tools, and workflows.
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   │   └── webhooks/      # Webhook handlers
+│   ├── employees/
+│   ├── products/
+│   ├── reports/
+│   ├── services/
+│   └── page.tsx           # Main dashboard
+├── components/
+│   └── ui/                # shadcn/ui components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utilities, mock data
+└── mastra/                # AI agents, tools, workflows
+```
 
-| Folder                 | Description                                                                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/mastra`           | Entry point for all Mastra-related code and configuration.                                                                               |
-| `src/mastra/agents`    | Define and configure your agents - their behavior, goals, and tools.                                                                     |
-| `src/mastra/workflows` | Define multi-step workflows that orchestrate agents and tools together.                                                                  |
-| `src/mastra/tools`     | Create reusable tools that your agents can call                                                                                          |
-| `src/mastra/mcp`       | (Optional) Implement custom MCP servers to share your tools with external agents                                                         |
-| `src/mastra/scorers`   | (Optional) Define scorers for evaluating agent performance over time                                                                     |
-| `src/mastra/public`    | (Optional) Contents are copied into the `.build/output` directory during the build process, making them available for serving at runtime |
+## Key Dependencies
 
-### Top-level files
+- **Framework**: Next.js 16
+- **UI**: @base-ui/react + Tailwind CSS
+- **Icons**: @phosphor-icons/react
+- **AI**: @mastra/core, @mastra/memory
+- **Validation**: Zod v4
+- **Linting**: Biome 2.2.0
 
-Top-level files define how your Mastra project is configured, built, and connected to its environment.
+## Environment Variables
 
-| File                  | Description                                                                                                       |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `src/mastra/index.ts` | Central entry point where you configure and initialize Mastra.                                                    |
-| `.env.example`        | Template for environment variables - copy and rename to `.env` to add your secret [model provider](/models) keys. |
-| `package.json`        | Defines project metadata, dependencies, and available npm scripts.                                                |
-| `tsconfig.json`       | Configures TypeScript options such as path aliases, compiler settings, and build output.                          |
+Required variables (check `.env.example` or implementation):
+- `WHATSAPP_VERIFY_TOKEN` - WhatsApp webhook verification
+- `WHATSAPP_ACCESS_TOKEN` - WhatsApp API access
+- `OPENAI_API_KEY` - For AI agents (if using OpenAI)
 
-## MCP Docs Server
-
-This project has the Mastra MCP Docs Server configured for Vscode.
-
-### Using MCP Docs
-
-The MCP server provides embedded documentation access within your editor:
-
-1. The server was automatically configured during project creation
-2. Restart your editor to load the MCP server
-3. Use the Mastra docs tools in your editor to access:
-   - API references
-   - Code examples
-   - Integration guides
-
-Learn more in the [MCP Documentation](https://mastra.ai/docs/mcp/overview).
-
-## Resources
-
-- [Mastra Documentation](https://mastra.ai/llms.txt)
-- [Mastra .well-known skills discovery](https://mastra.ai/.well-known/skills/index.json)
+Never commit secrets to the repository.
