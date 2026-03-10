@@ -1,0 +1,133 @@
+export interface Producto {
+  id: string;
+  nombre: string;
+  categoria: string;
+  stock: number;
+  stockMinimo: number;
+  precio: number;
+  unidad: string;
+  proveedor: string;
+}
+
+export const mockProductos: Producto[] = [
+  {
+    id: "p1",
+    nombre: "Shampoo Kerastase",
+    categoria: "Capilares",
+    stock: 8,
+    stockMinimo: 5,
+    precio: 45,
+    unidad: "unid.",
+    proveedor: "Distribuidora Belleza",
+  },
+  {
+    id: "p2",
+    nombre: "Acondicionador Wella",
+    categoria: "Capilares",
+    stock: 3,
+    stockMinimo: 5,
+    precio: 38,
+    unidad: "unid.",
+    proveedor: "Distribuidora Belleza",
+  },
+  {
+    id: "p3",
+    nombre: "Cera para cabello",
+    categoria: "Acabado",
+    stock: 12,
+    stockMinimo: 4,
+    precio: 22,
+    unidad: "unid.",
+    proveedor: "ProStyle",
+  },
+  {
+    id: "p4",
+    nombre: "Gel fijador",
+    categoria: "Acabado",
+    stock: 6,
+    stockMinimo: 4,
+    precio: 15,
+    unidad: "unid.",
+    proveedor: "ProStyle",
+  },
+  {
+    id: "p5",
+    nombre: "Mascarilla capilar",
+    categoria: "Tratamiento",
+    stock: 2,
+    stockMinimo: 4,
+    precio: 30,
+    unidad: "unid.",
+    proveedor: "Distribuidora Belleza",
+  },
+  {
+    id: "p6",
+    nombre: "Tónico anticaída",
+    categoria: "Tratamiento",
+    stock: 5,
+    stockMinimo: 3,
+    precio: 50,
+    unidad: "unid.",
+    proveedor: "Medical Beauty",
+  },
+  {
+    id: "p7",
+    nombre: "Spray fijador Redken",
+    categoria: "Acabado",
+    stock: 9,
+    stockMinimo: 3,
+    precio: 42,
+    unidad: "unid.",
+    proveedor: "ProStyle",
+  },
+  {
+    id: "p8",
+    nombre: "Crema para peinar",
+    categoria: "Acabado",
+    stock: 7,
+    stockMinimo: 4,
+    precio: 28,
+    unidad: "unid.",
+    proveedor: "ProStyle",
+  },
+  {
+    id: "p9",
+    nombre: "Tinte en crema Igora",
+    categoria: "Color",
+    stock: 1,
+    stockMinimo: 6,
+    precio: 35,
+    unidad: "unid.",
+    proveedor: "Schwarzkopf",
+  },
+  {
+    id: "p10",
+    nombre: "Oxidante 20vol",
+    categoria: "Color",
+    stock: 4,
+    stockMinimo: 6,
+    precio: 18,
+    unidad: "unid.",
+    proveedor: "Schwarzkopf",
+  },
+  {
+    id: "p11",
+    nombre: "Keratina líquida",
+    categoria: "Tratamiento",
+    stock: 3,
+    stockMinimo: 3,
+    precio: 85,
+    unidad: "unid.",
+    proveedor: "Medical Beauty",
+  },
+  {
+    id: "p12",
+    nombre: "Shampoo neutro",
+    categoria: "Capilares",
+    stock: 15,
+    stockMinimo: 5,
+    precio: 20,
+    unidad: "unid.",
+    proveedor: "Distribuidora Belleza",
+  },
+];

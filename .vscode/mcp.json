@@ -1,9 +1,11 @@
 {
   "servers": {
-    "mastra": {
+    "shadcn": {
       "command": "npx",
-      "args": ["-y", "@mastra/mcp-docs-server@latest"],
-      "type": "stdio"
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     }
   }
 }
