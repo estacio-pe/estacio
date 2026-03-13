@@ -1,4 +1,5 @@
 import { UsersIcon } from "@phosphor-icons/react/dist/ssr";
+import { PageHeader } from "@/components/page-header";
 import { RootLayout } from "@/components/root-layout";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -19,11 +20,8 @@ export default function EmpleadosPage() {
 
   return (
     <RootLayout>
-      <div className="flex flex-col gap-6 p-6">
-        <div className="flex items-center gap-2">
-          <UsersIcon className="size-5 text-muted-foreground" />
-          <h1 className="text-sm font-semibold">Empleados</h1>
-        </div>
+      <div className="flex flex-col gap-6 p-4 sm:p-6">
+        <PageHeader title="Empleados" icon={<UsersIcon />} />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard label="Total empleados" value={mockEmpleados.length} />
@@ -46,8 +44,12 @@ export default function EmpleadosPage() {
             <TableBody>
               {mockEmpleados.map((emp) => (
                 <TableRow key={emp.id}>
-                  <TableCell className="font-medium">{emp.nombre}</TableCell>
-                  <TableCell>{emp.cargo}</TableCell>
+                  <TableCell className="max-w-36 truncate font-medium sm:max-w-none">
+                    {emp.nombre}
+                  </TableCell>
+                  <TableCell className="max-w-28 truncate sm:max-w-none">
+                    {emp.cargo}
+                  </TableCell>
                   <TableCell>
                     {emp.tipo === "porcentaje" ? (
                       <div className="flex flex-col gap-0.5">

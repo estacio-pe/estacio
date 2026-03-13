@@ -2,16 +2,18 @@
 
 import {
   ArrowDownIcon,
+  HouseIcon,
   PlusIcon,
   ScissorsIcon,
   TagIcon,
 } from "@phosphor-icons/react";
 import { useMemo, useState } from "react";
 import { Spoiler } from "spoiled";
+import { PageHeader } from "@/components/page-header";
 import { RootLayout } from "@/components/root-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -38,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StatCard } from "@/components/ui/stat-card";
 import {
   Table,
   TableBody,
@@ -60,21 +63,22 @@ import {
 const PAGE_SIZE = 10;
 
 const paymentClass: Record<PaymentMethod, string> = {
-  Efectivo:
-    "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-400",
-  Tarjeta:
-    "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-400",
-  Yape: "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/40 dark:text-purple-400",
+  Efectivo: "border-chart-2/40 bg-chart-2/15 text-chart-2",
+  Tarjeta: "border-chart-1/40 bg-chart-1/15 text-chart-1",
+  Yape: "border-chart-3/40 bg-chart-3/15 text-chart-3",
 };
 
 const typeClass: Record<Transaction["tipo"], string> = {
-  Servicio:
-    "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-400",
-  Producto:
-    "bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/40 dark:text-sky-400",
-  Gasto:
-    "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/40 dark:text-rose-400",
+  Servicio: "border-chart-4/40 bg-chart-4/15 text-chart-4",
+  Producto: "border-chart-5/40 bg-chart-5/15 text-chart-5",
+  Gasto: "border-destructive/30 bg-destructive/10 text-destructive",
 };
+
+const paymentOptions = [
+  { value: "Efectivo", label: "Efectivo" },
+  { value: "Tarjeta", label: "Tarjeta" },
+  { value: "Yape", label: "Yape" },
+];
 
 interface ServicioForm {
   ticket: string;
@@ -113,7 +117,7 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState<ServicioForm>(emptyForm);
 
-  const totalPages = Math.ceil(transactions.length / PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(transactions.length / PAGE_SIZE));
   const pageData = transactions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const selectedServicio = mockServiciosCatalogo.find(
@@ -171,83 +175,83 @@ export default function Home() {
 
   return (
     <RootLayout>
-      <div className="flex flex-col gap-6 p-6">
-        <div className="flex justify-end">
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              Exportar
-            </Button>
+      <div className="flex flex-col gap-6 p-4 sm:p-6">
+        <PageHeader
+          title="Inicio"
+          icon={<HouseIcon />}
+          action={
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-10 px-3 sm:h-7 sm:px-2.5"
+              >
+                Exportar
+              </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger render={<Button size="sm" />}>
-                <PlusIcon weight="bold" />
-                Nuevo
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-48">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Registrar</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-                    <ScissorsIcon />
-                    Servicio
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <ArrowDownIcon />
-                    Gasto
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      Próximamente
-                    </span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <TagIcon />
-                    Producto
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      Próximamente
-                    </span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button size="sm" className="h-10 px-3 sm:h-7 sm:px-2.5" />
+                  }
+                >
+                  <PlusIcon weight="bold" />
+                  Nuevo
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="min-w-48">
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>Registrar</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                      <ScissorsIcon />
+                      Servicio
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      <ArrowDownIcon />
+                      Gasto
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        Próximamente
+                      </span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      <TagIcon />
+                      Producto
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        Próximamente
+                      </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          }
+        />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-muted-foreground">
-                Gastos del día
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="select-none text-2xl font-semibold">
+          <StatCard
+            label="Gastos del día"
+            value={
+              <span className="select-none">
                 <Spoiler>S/ {stats.gastos.toFixed(2)}</Spoiler>
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-muted-foreground">
-                Venta con tarjeta
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="select-none text-2xl font-semibold">
+              </span>
+            }
+          />
+          <StatCard
+            label="Venta con tarjeta"
+            value={
+              <span className="select-none">
                 <Spoiler>S/ {stats.ventaTarjeta.toFixed(2)}</Spoiler>
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-muted-foreground">
-                Venta de productos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="select-none text-2xl font-semibold">
+              </span>
+            }
+          />
+          <StatCard
+            label="Venta de productos"
+            value={
+              <span className="select-none">
                 <Spoiler>S/ {stats.ventaProductos.toFixed(2)}</Spoiler>
-              </p>
-            </CardContent>
-          </Card>
+              </span>
+            }
+          />
         </div>
 
         <Card>
@@ -263,37 +267,54 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pageData.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="tabular-nums">{row.hora}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={typeClass[row.tipo]}>
-                      {row.tipo}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{row.descripcion}</TableCell>
-                  <TableCell>{row.empleado}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={paymentClass[row.pago]}>
-                      {row.pago}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    S/ {row.monto.toFixed(2)}
+              {pageData.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="py-8 text-center text-muted-foreground"
+                  >
+                    No hay movimientos registrados.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                pageData.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell className="tabular-nums">{row.hora}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={typeClass[row.tipo]}>
+                        {row.tipo}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="max-w-36 truncate sm:max-w-none">
+                      {row.descripcion}
+                    </TableCell>
+                    <TableCell>{row.empleado}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={paymentClass[row.pago]}
+                      >
+                        {row.pago}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      S/ {row.monto.toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
 
-          <div className="flex items-center justify-between border-t px-4 py-3">
+          <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
               Página {page} de {totalPages} — {transactions.length} registros
             </p>
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-1 sm:flex-nowrap">
               <Button
                 variant="outline"
                 size="xs"
+                className="h-10 min-w-10 px-3 sm:h-6 sm:min-w-6 sm:px-2"
                 disabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
               >
@@ -304,6 +325,8 @@ export default function Home() {
                   key={`page-${p}`}
                   variant={p === page ? "default" : "outline"}
                   size="xs"
+                  className="h-10 min-w-10 px-3 sm:h-6 sm:min-w-6 sm:px-2"
+                  aria-label={`Ir a la página ${p}`}
                   onClick={() => setPage(p)}
                 >
                   {p}
@@ -312,6 +335,7 @@ export default function Home() {
               <Button
                 variant="outline"
                 size="xs"
+                className="h-10 min-w-10 px-3 sm:h-6 sm:min-w-6 sm:px-2"
                 disabled={page === totalPages}
                 onClick={() => setPage((p) => p + 1)}
               >
@@ -322,7 +346,6 @@ export default function Home() {
         </Card>
       </div>
 
-      {/* Modal registro de servicio */}
       <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -335,6 +358,7 @@ export default function Home() {
               <Input
                 id="input-ticket"
                 placeholder="ej. 0031"
+                inputMode="numeric"
                 value={form.ticket}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, ticket: e.target.value }))
@@ -390,11 +414,7 @@ export default function Home() {
               <FieldLabel>Método de pago</FieldLabel>
 
               <Select
-                items={[
-                  { value: "Efectivo", label: "Efectivo" },
-                  { value: "Tarjeta", label: "Tarjeta" },
-                  { value: "Yape", label: "Yape" },
-                ]}
+                items={paymentOptions}
                 onValueChange={(value) =>
                   setForm((f) => ({ ...f, metodoPago: value as string }))
                 }
@@ -404,11 +424,7 @@ export default function Home() {
                 </SelectTrigger>
                 <SelectContent alignItemWithTrigger={false}>
                   <SelectGroup>
-                    {[
-                      { value: "Efectivo", label: "Efectivo" },
-                      { value: "Tarjeta", label: "Tarjeta" },
-                      { value: "Yape", label: "Yape" },
-                    ].map((metodo) => (
+                    {paymentOptions.map((metodo) => (
                       <SelectItem key={metodo.value} value={metodo.value}>
                         {metodo.label}
                       </SelectItem>
@@ -429,6 +445,9 @@ export default function Home() {
               </FieldLabel>
               <Input
                 type="number"
+                min="0"
+                step="0.5"
+                inputMode="decimal"
                 placeholder="0.00"
                 value={form.monto}
                 onChange={(e) =>

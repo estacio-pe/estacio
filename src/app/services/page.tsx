@@ -1,5 +1,5 @@
 import { ScissorsIcon } from "@phosphor-icons/react/dist/ssr";
-
+import { PageHeader } from "@/components/page-header";
 import { RootLayout } from "@/components/root-layout";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,11 +37,8 @@ export default function ServiciosPage() {
 
   return (
     <RootLayout>
-      <div className="flex flex-col gap-6 p-6">
-        <div className="flex items-center gap-2">
-          <ScissorsIcon className="size-5 text-muted-foreground" />
-          <h1 className="text-sm font-semibold">Servicios</h1>
-        </div>
+      <div className="flex flex-col gap-6 p-4 sm:p-6">
+        <PageHeader title="Servicios" icon={<ScissorsIcon />} />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard label="Servicios este mes" value={totalCantidad} />
@@ -72,7 +69,9 @@ export default function ServiciosPage() {
                 <TableBody>
                   {statsPorIngreso.map((s) => (
                     <TableRow key={s.id}>
-                      <TableCell>{s.nombre}</TableCell>
+                      <TableCell className="max-w-36 truncate sm:max-w-none">
+                        {s.nombre}
+                      </TableCell>
                       <TableCell className="text-right tabular-nums">
                         {s.cantidadMes}
                       </TableCell>
@@ -111,7 +110,9 @@ export default function ServiciosPage() {
                 <TableBody>
                   {rendimientoPorIngreso.map((r) => (
                     <TableRow key={r.empleado}>
-                      <TableCell>{r.empleado}</TableCell>
+                      <TableCell className="max-w-36 truncate sm:max-w-none">
+                        {r.empleado}
+                      </TableCell>
                       <TableCell className="text-right tabular-nums">
                         {r.cantidad}
                       </TableCell>
@@ -143,7 +144,9 @@ export default function ServiciosPage() {
               <TableBody>
                 {mockServiciosCatalogo.map((s) => (
                   <TableRow key={s.id}>
-                    <TableCell>{s.nombre}</TableCell>
+                    <TableCell className="max-w-36 truncate sm:max-w-none">
+                      {s.nombre}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{s.categoria}</Badge>
                     </TableCell>
