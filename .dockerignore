@@ -34,3 +34,4 @@ AGENTS.md
 Caddyfile
 Dockerfile
 .dockerignore
+.agents/
